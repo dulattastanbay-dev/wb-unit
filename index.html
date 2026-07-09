@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор юнит-экономики Wildberries — прибыль, маржа, ROI | WB.Unit</title>
+  <meta name="description" content="Бесплатный калькулятор юнит-экономики для селлеров Wildberries: чистая прибыль с единицы, маржинальность, ROI и точка безубыточности с учётом комиссии WB, логистики, процента выкупа, рекламы и налогов.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="WB.Unit — калькулятор юнит-экономики Wildberries">
+  <meta property="og:description" content="Рассчитайте чистую прибыль, маржинальность, ROI и точку безубыточности товара на Wildberries — с учётом выкупа, логистики, рекламы и налогов.">
+  <meta property="og:locale" content="ru_RU">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%237c3aed'/%3E%3Ctext x='32' y='43' font-size='32' font-family='Arial, sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3E%E2%82%BD%3C/text%3E%3C/svg%3E">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "WB.Unit — калькулятор юнит-экономики Wildberries",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB" },
+    "description": "Онлайн-калькулятор прибыли для селлеров Wildberries: чистая прибыль с единицы, маржинальность, ROI и точка безубыточности с учётом комиссии, логистики, процента выкупа, рекламы и налогов."
+  }
+  </script>
+  <style>
+    /* ============ Дизайн-токены ============ */
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --border: #e5e5ea;
+      --accent: #7c3aed;
+      --accent-dark: #6d28d9;
+      --accent-wb: #cb11ab;
+      --focus-ring: rgba(124, 58, 237, 0.25);
+
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+      --success-text: #15803d;
+      --success-strong: #166534;
+
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --danger-text: #b91c1c;
+      --danger-strong: #991b1b;
+
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 4px 12px rgba(124, 58, 237, 0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ============ Шапка ============ */
+    .header {
+      padding: 48px 0 32px;
+      text-align: center;
+    }
+
+    .header__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(203, 17, 171, 0.08), rgba(124, 58, 237, 0.08));
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .header__badge svg {
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .header h1 .brand {
+      background: linear-gradient(135deg, var(--accent-wb), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .header p {
+      margin-top: 12px;
+      font-size: clamp(15px, 2.5vw, 17px);
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ============ Карточки ============ */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 32px;
+    }
+
+    .card__title {
+      font-size: 19px;
+      font-weight: 650;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card__title svg {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field--full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .field .hint {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .unit {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      height: 50px;
+      padding: 0 44px 0 16px;
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text-primary);
+      background: #fafafa;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      appearance: none;
+      -moz-appearance: textfield;
+    }
+
+    select {
+      padding-right: 44px;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input:hover,
+    select:hover {
+      border-color: #d1d1d6;
+    }
+
+    input:focus,
+    select:focus {
+      background: var(--surface);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--focus-ring);
+    }
+
+    input.invalid {
+      border-color: var(--danger-text);
+      background: var(--danger-bg);
+    }
+
+    .field-error {
+      font-size: 12.5px;
+      color: var(--danger-text);
+      display: none;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    /* Кастомная комиссия — скрыта по умолчанию */
+    #customCommissionField {
+      display: none;
+    }
+
+    #customCommissionField.visible {
+      display: flex;
+      animation: fadeSlide 0.3s ease both;
+    }
+
+    /* Разделитель групп полей */
+    .form-section {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .form-section:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    /* ============ Кнопка расчёта ============ */
+    .btn-calc {
+      width: 100%;
+      margin-top: 28px;
+      height: 56px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent-wb), var(--accent));
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .btn-calc:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      filter: brightness(1.05);
+    }
+
+    .btn-calc:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: none;
+    }
+
+    .btn-calc:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--focus-ring);
+    }
+
+    /* ============ Блок результатов ============ */
+    .results {
+      display: none;
+      margin-top: 24px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      border: 1.5px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+
+    .results.visible {
+      display: block;
+      animation: fadeSlide 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .results--profit {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+    }
+
+    .results--loss {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+    }
+
+    .results__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 650;
+      margin-bottom: 20px;
+    }
+
+    .results--profit .results__header {
+      color: var(--success-strong);
+    }
+
+    .results--loss .results__header {
+      color: var(--danger-strong);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .metric {
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: var(--radius-md);
+      padding: 18px 16px;
+      text-align: center;
+    }
+
+    .metric__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .metric__value {
+      font-size: clamp(20px, 4vw, 26px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .results--profit .metric__value {
+      color: var(--success-strong);
+    }
+
+    .results--loss .metric__value {
+      color: var(--danger-strong);
+    }
+
+    /* Точка безубыточности */
+    .breakeven {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14.5px;
+      line-height: 1.5;
+    }
+
+    .breakeven svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--accent);
+    }
+
+    .breakeven strong {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .results__warning {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(185, 28, 28, 0.08);
+      border: 1px solid var(--danger-border);
+      border-radius: var(--radius-md);
+      color: var(--danger-strong);
+      font-size: 15px;
+      font-weight: 600;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+
+    .results__warning.visible {
+      display: flex;
+    }
+
+    .results__warning svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Детализация расходов */
+    .breakdown {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+    }
+
+    .breakdown__title {
+      font-size: 13px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .breakdown__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 14.5px;
+      padding: 5px 0;
+      color: var(--text-primary);
+    }
+
+    .breakdown__row span:last-child {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .breakdown__row--total {
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+      padding-top: 12px;
+      font-weight: 650;
+    }
+
+    /* ============ Блок «Как это считается» ============ */
+    .faq-card {
+      margin-top: 24px;
+    }
+
+    .faq details {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq details:last-child {
+      border-bottom: none;
+    }
+
+    .faq summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 0;
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .faq summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq summary::after {
+      content: "";
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: transform 0.25s ease;
+    }
+
+    .faq details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .faq summary:hover {
+      color: var(--accent);
+    }
+
+    .faq .faq__body {
+      padding: 0 0 16px;
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .faq .formula {
+      display: block;
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* ============ Футер ============ */
+    .footer {
+      margin-top: 40px;
+      padding-bottom: 48px;
+    }
+
+    .footer__copy {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ============ Анимации ============ */
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============ Адаптивность ============ */
+    @media (max-width: 560px) {
+      .header {
+        padding: 36px 0 24px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .metric {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+        padding: 14px 18px;
+      }
+
+      .metric__label {
+        margin-bottom: 0;
+      }
+
+      .results {
+        padding: 24px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ Шапка ============ -->
+  <header class="header">
+    <div class="container">
+      <div class="header__badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
+        Для селлеров Wildberries
+      </div>
+      <h1><span class="brand">WB.Unit</span> — Калькулятор прибыли селлера</h1>
+      <p>Чистая прибыль, маржинальность, ROI и точка безубыточности — с учётом комиссии, логистики, процента выкупа, рекламы и налогов.</p>
+    </div>
+  </header>
+
+  <!-- ============ Основной контент ============ -->
+  <main class="container" style="flex: 1;">
+
+    <!-- Форма ввода -->
+    <section class="card" aria-labelledby="formTitle">
+      <h2 class="card__title" id="formTitle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="2" width="16" height="20" rx="2"/>
+          <line x1="8" y1="6" x2="16" y2="6"/>
+          <line x1="8" y1="10" x2="10" y2="10"/>
+          <line x1="14" y1="10" x2="16" y2="10"/>
+          <line x1="8" y1="14" x2="10" y2="14"/>
+          <line x1="14" y1="14" x2="16" y2="14"/>
+          <line x1="8" y1="18" x2="16" y2="18"/>
+        </svg>
+        Параметры юнита
+      </h2>
+
+      <form id="calcForm" novalidate>
+        <div class="form-grid">
+
+          <div class="form-section">Товар</div>
+
+          <div class="field">
+            <label for="purchasePrice">Цена закупки товара</label>
+            <div class="input-wrap">
+              <input type="number" id="purchasePrice" inputmode="decimal" min="0" step="0.01" placeholder="Например, 450">
+              <span class="unit">₽</span>
+            </div>
+            <span class="field-error" id="purchasePriceError">Укажите цену закупки (число больше 0)</span>
+          </div>
+
+          <div class="field">
+            <label for="salePrice">Планируемая цена продажи</label>
+            <div class="input-wrap">
+              <input type="number" id="salePrice" inputmode="decimal" min="0" step="0.01" placeholder="Например, 1290">
+              <span class="unit">₽</span>
+            </div>
+            <span class="field-error" id="salePriceError">Укажите цену продажи (число больше 0)</span>
+          </div>
+
+          <div class="form-section">Расходы Wildberries</div>
+
+          <div class="field">
+            <label for="commissionSelect">Комиссия маркетплейса</label>
+            <select id="commissionSelect">
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="23" selected>23%</option>
+              <option value="25">25%</option>
+              <option value="custom">Своя комиссия…</option>
+            </select>
+          </div>
+
+          <div class="field" id="customCommissionField">
+            <label for="customCommission">Своя комиссия</label>
+            <div class="input-wrap">
+              <input type="number" id="customCommission" inputmode="decimal" min="0" max="100" step="0.1" placeholder="Например, 19.5">
+              <span class="unit">%</span>
+            </div>
+            <span class="field-error" id="customCommissionError">Укажите комиссию от 0 до 100%</span>
+          </div>
+
+          <div class="field">
+            <label for="wbLogistics">Логистика WB до покупателя</label>
+            <div class="input-wrap">
+              <input type="number" id="wbLogistics" inputmode="decimal" min="0" step="0.01" placeholder="Например, 72">
+              <span class="unit">₽</span>
+            </div>
+            <span class="hint">Тариф WB за доставку единицы до клиента</span>
+            <span class="field-error" id="wbLogisticsError">Укажите стоимость доставки (0, если её нет)</span>
+          </div>
+
+          <div class="field">
+            <label for="buyoutRate">Процент выкупа</label>
+            <div class="input-wrap">
+              <input type="number" id="buyoutRate" inputmode="decimal" min="1" max="100" step="1" value="100">
+              <span class="unit">%</span>
+            </div>
+            <span class="hint">Одежда и обувь — обычно 30–60%</span>
+            <span class="field-error" id="buyoutRateError">Укажите процент выкупа от 1 до 100</span>
+          </div>
+
+          <div class="field">
+            <label for="returnLogistics">Обратная логистика</label>
+            <div class="input-wrap">
+              <input type="number" id="returnLogistics" inputmode="decimal" min="0" step="0.01" value="50">
+              <span class="unit">₽</span>
+            </div>
+            <span class="hint">Возврат невыкупленной единицы (обычно 50 ₽)</span>
+            <span class="field-error" id="returnLogisticsError">Укажите стоимость возврата (0, если её нет)</span>
+          </div>
+
+          <div class="form-section">Прочие расходы</div>
+
+          <div class="field">
+            <label for="logisticsCost">Логистика до склада и упаковка</label>
+            <div class="input-wrap">
+              <input type="number" id="logisticsCost" inputmode="decimal" min="0" step="0.01" placeholder="Например, 80">
+              <span class="unit">₽</span>
+            </div>
+            <span class="field-error" id="logisticsCostError">Укажите стоимость (0, если её нет)</span>
+          </div>
+
+          <div class="field">
+            <label for="adsPercent">Реклама (ДРР)</label>
+            <div class="input-wrap">
+              <input type="number" id="adsPercent" inputmode="decimal" min="0" max="100" step="0.1" value="0">
+              <span class="unit">%</span>
+            </div>
+            <span class="hint">Доля рекламных расходов от цены продажи</span>
+            <span class="field-error" id="adsPercentError">Укажите ДРР от 0 до 100%</span>
+          </div>
+
+          <div class="field field--full">
+            <label for="taxSelect">Налоговый режим (УСН)</label>
+            <select id="taxSelect">
+              <option value="income" selected>Доходы — 6%</option>
+              <option value="income-expenses">Доходы − Расходы — 15%</option>
+            </select>
+            <span class="hint">6% считается с цены продажи, 15% — с разницы доходов и расходов</span>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-calc" id="calcBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v16a2 2 0 0 0 2 2h16"/>
+            <path d="M7 13l3-3 4 4 5-5"/>
+          </svg>
+          Рассчитать юнит-экономику
+        </button>
+      </form>
+    </section>
+
+    <!-- Блок результатов -->
+    <section class="results" id="results" aria-live="polite">
+      <div class="results__header" id="resultsHeader">
+        <svg id="iconProfit" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="m8.5 12.5 2.5 2.5 5-5.5"/>
+        </svg>
+        <svg id="iconLoss" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none;">
+          <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span id="resultsTitle">Результаты расчёта</span>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric__label">Чистая прибыль / шт.</div>
+          <div class="metric__value" id="profitValue">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric__label">Маржинальность</div>
+          <div class="metric__value" id="marginValue">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric__label">ROI</div>
+          <div class="metric__value" id="roiValue">—</div>
+        </div>
+      </div>
+
+      <div class="breakeven" id="breakeven">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span id="breakevenText"></span>
+      </div>
+
+      <div class="results__warning" id="lossWarning" role="alert">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span id="lossWarningText"></span>
+      </div>
+
+      <div class="breakdown">
+        <div class="breakdown__title">Из чего состоит расчёт</div>
+        <div class="breakdown__row">
+          <span>Цена продажи</span>
+          <span id="bdSale">—</span>
+        </div>
+        <div class="breakdown__row">
+          <span>Закупка товара</span>
+          <span id="bdPurchase">—</span>
+        </div>
+        <div class="breakdown__row">
+          <span>Логистика до склада и упаковка</span>
+          <span id="bdLogistics">—</span>
+        </div>
+        <div class="breakdown__row">
+          <span id="bdCommissionLabel">Комиссия маркетплейса</span>
+          <span id="bdCommission">—</span>
+        </div>
+        <div class="breakdown__row">
+          <span id="bdWbLogisticsLabel">Логистика WB</span>
+          <span id="bdWbLogistics">—</span>
+        </div>
+        <div class="breakdown__row">
+          <span id="bdAdsLabel">Реклама</span>
+          <span id="bdAds">—</span>
+        </div>
+        <div class="breakdown__row">
+          <span id="bdTaxLabel">Налог</span>
+          <span id="bdTax">—</span>
+        </div>
+        <div class="breakdown__row breakdown__row--total">
+          <span>Чистая прибыль</span>
+          <span id="bdProfit">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Блок «Как это считается» -->
+    <section class="card faq-card faq" aria-labelledby="faqTitle">
+      <h2 class="card__title" id="faqTitle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Как это считается
+      </h2>
+
+      <details>
+        <summary>Формула чистой прибыли</summary>
+        <div class="faq__body">
+          Из цены продажи вычитаются все расходы на единицу товара:
+          <span class="formula">Прибыль = Цена − Закупка − Логистика до склада − Комиссия − Логистика WB − Реклама − Налог</span>
+        </div>
+      </details>
+
+      <details>
+        <summary>Как процент выкупа влияет на логистику</summary>
+        <div class="faq__body">
+          Wildberries берёт плату за каждую доставку до клиента, а за невыкупленный товар — ещё и за возврат. Чем ниже выкуп, тем больше доставок приходится на одну реальную продажу:
+          <span class="formula">Логистика WB = (Доставка + Возврат × (1 − Выкуп)) / Выкуп</span>
+          Пример: при доставке 72 ₽, возврате 50 ₽ и выкупе 30% реальная логистика на одну продажу — уже 356,7 ₽.
+        </div>
+      </details>
+
+      <details>
+        <summary>Маржинальность и ROI</summary>
+        <div class="faq__body">
+          Маржинальность показывает, какая доля цены остаётся вам; ROI — сколько приносит каждый вложенный в закупку рубль:
+          <span class="formula">Маржа = Прибыль / Цена × 100% &nbsp;&nbsp;·&nbsp;&nbsp; ROI = Прибыль / Закупка × 100%</span>
+        </div>
+      </details>
+
+      <details>
+        <summary>Точка безубыточности</summary>
+        <div class="faq__body">
+          Минимальная цена продажи, при которой прибыль равна нулю. Ниже неё каждая продажа приносит убыток:
+          <span class="formula">Цена min = (Закупка + Вся логистика) / (1 − Комиссия% − ДРР% − Налог%)</span>
+          Для УСН «Доходы − Расходы» налог при нулевой прибыли равен нулю и в формуле не участвует.
+        </div>
+      </details>
+
+      <details>
+        <summary>Что калькулятор не учитывает</summary>
+        <div class="faq__body">
+          Хранение на складах WB, платную приёмку, эквайринг, штрафы, самовыкупы и участие в акциях. Эти расходы сильно зависят от категории и оборота — закладывайте на них запас маржи 5–10%.
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- ============ Футер ============ -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__copy">WB.Unit · Расчёт носит справочный характер и не учитывает хранение, приёмку и эквайринг.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var STORAGE_KEY = 'wb-unit-inputs';
+
+      // ---------- Элементы ----------
+      var form = document.getElementById('calcForm');
+      var purchaseInput = document.getElementById('purchasePrice');
+      var saleInput = document.getElementById('salePrice');
+      var logisticsInput = document.getElementById('logisticsCost');
+      var wbLogisticsInput = document.getElementById('wbLogistics');
+      var buyoutInput = document.getElementById('buyoutRate');
+      var returnInput = document.getElementById('returnLogistics');
+      var adsInput = document.getElementById('adsPercent');
+      var commissionSelect = document.getElementById('commissionSelect');
+      var customCommissionField = document.getElementById('customCommissionField');
+      var customCommissionInput = document.getElementById('customCommission');
+      var taxSelect = document.getElementById('taxSelect');
+
+      var numberInputs = [
+        purchaseInput, saleInput, logisticsInput, wbLogisticsInput,
+        buyoutInput, returnInput, adsInput, customCommissionInput
+      ];
+
+      var resultsBlock = document.getElementById('results');
+      var resultsTitle = document.getElementById('resultsTitle');
+      var iconProfit = document.getElementById('iconProfit');
+      var iconLoss = document.getElementById('iconLoss');
+      var profitValue = document.getElementById('profitValue');
+      var marginValue = document.getElementById('marginValue');
+      var roiValue = document.getElementById('roiValue');
+      var breakevenText = document.getElementById('breakevenText');
+      var lossWarning = document.getElementById('lossWarning');
+      var lossWarningText = document.getElementById('lossWarningText');
+
+      var bdSale = document.getElementById('bdSale');
+      var bdPurchase = document.getElementById('bdPurchase');
+      var bdLogistics = document.getElementById('bdLogistics');
+      var bdCommission = document.getElementById('bdCommission');
+      var bdCommissionLabel = document.getElementById('bdCommissionLabel');
+      var bdWbLogistics = document.getElementById('bdWbLogistics');
+      var bdWbLogisticsLabel = document.getElementById('bdWbLogisticsLabel');
+      var bdAds = document.getElementById('bdAds');
+      var bdAdsLabel = document.getElementById('bdAdsLabel');
+      var bdTax = document.getElementById('bdTax');
+      var bdTaxLabel = document.getElementById('bdTaxLabel');
+      var bdProfit = document.getElementById('bdProfit');
+
+      var resultsShown = false;
+
+      // ---------- Форматирование ----------
+      var rubFormat = new Intl.NumberFormat('ru-RU', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+
+      function formatRub(value) {
+        return rubFormat.format(Math.round(value * 100) / 100) + ' ₽';
+      }
+
+      function formatPercent(value) {
+        return rubFormat.format(Math.round(value * 10) / 10) + '%';
+      }
+
+      // ---------- Сохранение введённых данных ----------
+      function saveInputs() {
+        try {
+          var data = {};
+          numberInputs.forEach(function (input) {
+            data[input.id] = input.value;
+          });
+          data.commissionSelect = commissionSelect.value;
+          data.taxSelect = taxSelect.value;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) { /* localStorage может быть недоступен — не критично */ }
+      }
+
+      function restoreInputs() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var data = JSON.parse(raw);
+          numberInputs.forEach(function (input) {
+            if (typeof data[input.id] === 'string' && data[input.id] !== '') {
+              input.value = data[input.id];
+            }
+          });
+          if (data.commissionSelect) commissionSelect.value = data.commissionSelect;
+          if (data.taxSelect) taxSelect.value = data.taxSelect;
+          customCommissionField.classList.toggle('visible', commissionSelect.value === 'custom');
+        } catch (e) { /* повреждённые данные игнорируем */ }
+      }
+
+      // ---------- Показ/скрытие поля кастомной комиссии ----------
+      commissionSelect.addEventListener('change', function () {
+        var isCustom = commissionSelect.value === 'custom';
+        customCommissionField.classList.toggle('visible', isCustom);
+        if (isCustom) {
+          customCommissionInput.focus();
+        } else {
+          clearFieldError(customCommissionInput);
+        }
+      });
+
+      // ---------- Валидация ----------
+      function setFieldError(input) {
+        input.classList.add('invalid');
+        var errorEl = document.getElementById(input.id + 'Error');
+        if (errorEl) errorEl.classList.add('visible');
+      }
+
+      function clearFieldError(input) {
+        input.classList.remove('invalid');
+        var errorEl = document.getElementById(input.id + 'Error');
+        if (errorEl) errorEl.classList.remove('visible');
+      }
+
+      // Читает и проверяет все поля. Возвращает объект значений или null.
+      // showErrors=false — тихий режим для мгновенного пересчёта при вводе.
+      function readInputs(showErrors) {
+        var valid = true;
+        var firstInvalid = null;
+
+        function num(input) {
+          return input.value === '' ? NaN : parseFloat(input.value);
+        }
+
+        function check(input, condition) {
+          if (condition) {
+            if (showErrors) clearFieldError(input);
+          } else {
+            if (showErrors) {
+              setFieldError(input);
+              if (!firstInvalid) firstInvalid = input;
+            }
+            valid = false;
+          }
+        }
+
+        var purchase = num(purchaseInput);
+        var sale = num(saleInput);
+        var logistics = num(logisticsInput);
+        var wbLogistics = num(wbLogisticsInput);
+        var buyout = num(buyoutInput);
+        var returnCost = num(returnInput);
+        var ads = num(adsInput);
+
+        check(purchaseInput, !isNaN(purchase) && purchase > 0);
+        check(saleInput, !isNaN(sale) && sale > 0);
+        check(logisticsInput, !isNaN(logistics) && logistics >= 0);
+        check(wbLogisticsInput, !isNaN(wbLogistics) && wbLogistics >= 0);
+        check(buyoutInput, !isNaN(buyout) && buyout >= 1 && buyout <= 100);
+        check(returnInput, !isNaN(returnCost) && returnCost >= 0);
+        check(adsInput, !isNaN(ads) && ads >= 0 && ads <= 100);
+
+        var commissionPercent;
+        if (commissionSelect.value === 'custom') {
+          commissionPercent = num(customCommissionInput);
+          check(customCommissionInput, !isNaN(commissionPercent) && commissionPercent >= 0 && commissionPercent <= 100);
+        } else {
+          commissionPercent = parseFloat(commissionSelect.value);
+        }
+
+        if (firstInvalid) firstInvalid.focus();
+        if (!valid) return null;
+
+        return {
+          purchase: purchase,
+          sale: sale,
+          logistics: logistics,
+          wbLogistics: wbLogistics,
+          buyout: buyout,
+          returnCost: returnCost,
+          ads: ads,
+          commissionPercent: commissionPercent,
+          taxMode: taxSelect.value
+        };
+      }
+
+      // ---------- Расчёт ----------
+      function compute(d) {
+        var rate = d.buyout / 100;
+
+        // Эффективная логистика WB на одну продажу с учётом выкупа:
+        // на 1 выкуп приходится 1/rate доставок и (1-rate)/rate возвратов
+        var effectiveWbLogistics = (d.wbLogistics + d.returnCost * (1 - rate)) / rate;
+
+        var commissionAmount = d.sale * d.commissionPercent / 100;
+        var adsAmount = d.sale * d.ads / 100;
+        var costsBeforeTax = d.purchase + d.logistics + effectiveWbLogistics + commissionAmount + adsAmount;
+
+        // Налог:
+        // УСН «Доходы» 6% — с полной цены продажи.
+        // УСН «Доходы − Расходы» 15% — с разницы (если она положительная).
+        var taxAmount, taxLabel;
+        if (d.taxMode === 'income') {
+          taxAmount = d.sale * 0.06;
+          taxLabel = 'Налог УСН «Доходы» (6%)';
+        } else {
+          var taxBase = d.sale - costsBeforeTax;
+          taxAmount = taxBase > 0 ? taxBase * 0.15 : 0;
+          taxLabel = 'Налог УСН «Доходы − Расходы» (15%)';
+        }
+
+        var profit = d.sale - costsBeforeTax - taxAmount;
+
+        // Точка безубыточности: цена, при которой прибыль = 0.
+        // Для УСН 15% налог при нулевой базе равен нулю и в формуле не участвует.
+        var taxShare = d.taxMode === 'income' ? 0.06 : 0;
+        var denominator = 1 - d.commissionPercent / 100 - d.ads / 100 - taxShare;
+        var fixedCosts = d.purchase + d.logistics + effectiveWbLogistics;
+        var breakeven = denominator > 0 ? fixedCosts / denominator : null;
+
+        return {
+          effectiveWbLogistics: effectiveWbLogistics,
+          commissionAmount: commissionAmount,
+          adsAmount: adsAmount,
+          taxAmount: taxAmount,
+          taxLabel: taxLabel,
+          profit: profit,
+          margin: (profit / d.sale) * 100,
+          roi: (profit / d.purchase) * 100,
+          breakeven: breakeven
+        };
+      }
+
+      // ---------- Вывод ----------
+      function render(d, r, quiet) {
+        profitValue.textContent = formatRub(r.profit);
+        marginValue.textContent = formatPercent(r.margin);
+        roiValue.textContent = formatPercent(r.roi);
+
+        if (r.breakeven !== null) {
+          breakevenText.innerHTML = 'Точка безубыточности: <strong>' + formatRub(r.breakeven) +
+            '</strong> — минимальная цена продажи, при которой вы выходите в ноль.';
+        } else {
+          breakevenText.textContent = 'Точка безубыточности недостижима: комиссия, реклама и налог вместе съедают всю цену.';
+        }
+
+        bdSale.textContent = '+ ' + formatRub(d.sale);
+        bdPurchase.textContent = '− ' + formatRub(d.purchase);
+        bdLogistics.textContent = '− ' + formatRub(d.logistics);
+        bdCommissionLabel.textContent = 'Комиссия маркетплейса (' + rubFormat.format(d.commissionPercent) + '%)';
+        bdCommission.textContent = '− ' + formatRub(r.commissionAmount);
+        bdWbLogisticsLabel.textContent = 'Логистика WB (выкуп ' + rubFormat.format(d.buyout) + '%)';
+        bdWbLogistics.textContent = '− ' + formatRub(r.effectiveWbLogistics);
+        bdAdsLabel.textContent = 'Реклама (ДРР ' + rubFormat.format(d.ads) + '%)';
+        bdAds.textContent = '− ' + formatRub(r.adsAmount);
+        bdTaxLabel.textContent = r.taxLabel;
+        bdTax.textContent = '− ' + formatRub(r.taxAmount);
+        bdProfit.textContent = (r.profit >= 0 ? '' : '− ') + formatRub(Math.abs(r.profit));
+
+        var isProfit = r.profit > 0;
+        resultsBlock.classList.toggle('results--profit', isProfit);
+        resultsBlock.classList.toggle('results--loss', !isProfit);
+        iconProfit.style.display = isProfit ? '' : 'none';
+        iconLoss.style.display = isProfit ? 'none' : '';
+        resultsTitle.textContent = isProfit
+          ? 'Товар прибыльный — можно закупать'
+          : 'Юнит-экономика не сходится';
+
+        if (!isProfit) {
+          lossWarningText.textContent = 'Внимание! Вы торгуете в минус на ' + formatRub(Math.abs(r.profit)) + ' с каждой штуки!';
+          lossWarning.classList.add('visible');
+        } else {
+          lossWarning.classList.remove('visible');
+        }
+
+        resultsShown = true;
+
+        if (!quiet) {
+          // Перезапуск анимации появления
+          resultsBlock.classList.remove('visible');
+          void resultsBlock.offsetWidth;
+          resultsBlock.classList.add('visible');
+          resultsBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          resultsBlock.classList.add('visible');
+        }
+      }
+
+      // ---------- Обработчики ----------
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var inputs = readInputs(true);
+        if (!inputs) {
+          resultsBlock.classList.remove('visible');
+          resultsShown = false;
+          return;
+        }
+        render(inputs, compute(inputs), false);
+      });
+
+      // Сохранение + мгновенный пересчёт после первого расчёта
+      function onFieldChange() {
+        saveInputs();
+        if (!resultsShown) return;
+        var inputs = readInputs(false);
+        if (inputs) render(inputs, compute(inputs), true);
+      }
+
+      numberInputs.forEach(function (input) {
+        input.addEventListener('input', function () {
+          clearFieldError(input);
+          onFieldChange();
+        });
+      });
+
+      commissionSelect.addEventListener('change', onFieldChange);
+      taxSelect.addEventListener('change', onFieldChange);
+
+      restoreInputs();
+    })();
+  </script>
+
+</body>
+</html>
