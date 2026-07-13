@@ -499,6 +499,120 @@
       color: var(--danger-strong);
     }
 
+    /* ============ Раскладка цены (стек-бар) ============ */
+    .costviz {
+      /* Категориальная палитра (проверена валидатором dataviz, CVD ΔE≥13.9) */
+      --seg-purchase: #2a78d6;   /* синий */
+      --seg-logistics: #1baf7a;  /* аква */
+      --seg-commission: #4a3aa7; /* фиолет */
+      --seg-delivery: #eb6834;   /* оранжевый */
+      --seg-ads: #e87ba4;        /* маджента */
+      --seg-tax: #eda100;        /* жёлтый */
+      --seg-profit: #0ca30c;     /* статус good */
+      --seg-loss: #d03b3b;       /* статус critical */
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+    }
+
+    .costviz__caption {
+      font-size: 13px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .costviz__track {
+      position: relative;
+      display: flex;
+      height: 34px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .costviz__seg {
+      height: 100%;
+      width: 0;
+      min-width: 0;
+      box-sizing: border-box;
+      border-right: 2px solid #fff;
+      transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .costviz__seg:last-child {
+      border-right: none;
+    }
+
+    .costviz__seg:first-child {
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .costviz__seg:last-child {
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    /* Маркер выручки (для убыточного сценария) */
+    .costviz__marker {
+      position: absolute;
+      top: -6px;
+      bottom: -6px;
+      width: 2px;
+      background: var(--text-primary);
+      left: 100%;
+      opacity: 0;
+      transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .costviz__marker span {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10.5px;
+      font-weight: 650;
+      color: var(--text-primary);
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+
+    .costviz.is-loss .costviz__marker {
+      opacity: 1;
+    }
+
+    .costviz__legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 16px;
+    }
+
+    .costviz__leg {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .costviz__dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .costviz__leg-amount {
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
     /* Точка безубыточности */
     .breakeven {
       margin-top: 16px;
@@ -993,6 +1107,15 @@
         </div>
       </div>
 
+      <!-- Визуальная раскладка цены продажи -->
+      <div class="costviz" id="costViz">
+        <div class="costviz__caption">Куда уходит цена продажи</div>
+        <div class="costviz__track" id="costTrack" role="img" aria-label="Раскладка цены продажи по статьям">
+          <div class="costviz__marker" id="costMarker"><span>выручка</span></div>
+        </div>
+        <div class="costviz__legend" id="costLegend"></div>
+      </div>
+
       <div class="breakeven" id="breakeven">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"/>
@@ -1266,6 +1389,11 @@
       var bdTax = document.getElementById('bdTax');
       var bdTaxLabel = document.getElementById('bdTaxLabel');
       var bdProfit = document.getElementById('bdProfit');
+
+      var costViz = document.getElementById('costViz');
+      var costTrack = document.getElementById('costTrack');
+      var costMarker = document.getElementById('costMarker');
+      var costLegend = document.getElementById('costLegend');
 
       var resultsShown = false;
       var lastProfit = 0, lastMargin = 0, lastRoi = 0;
@@ -1600,8 +1728,77 @@
         };
       }
 
+      // ---------- Раскладка цены (стек-бар) ----------
+      function renderCostViz(d, r, quiet) {
+        var segDefs = [
+          { label: 'Закупка', color: 'var(--seg-purchase)', value: d.purchase },
+          { label: 'Логистика до склада', color: 'var(--seg-logistics)', value: d.logistics },
+          { label: 'Комиссия', color: 'var(--seg-commission)', value: r.commissionAmount },
+          { label: 'Логистика до клиента', color: 'var(--seg-delivery)', value: r.effectiveWbLogistics },
+          { label: 'Реклама', color: 'var(--seg-ads)', value: r.adsAmount },
+          { label: 'Налог', color: 'var(--seg-tax)', value: r.taxAmount }
+        ];
+
+        var totalCosts = segDefs.reduce(function (s, x) { return s + x.value; }, 0);
+        var isLoss = r.profit <= 0;
+        var denom = Math.max(d.sale, totalCosts);
+        if (denom <= 0) denom = 1;
+
+        // Собираем список сегментов (только ненулевые) + прибыль, если она есть
+        var segments = segDefs.filter(function (x) { return x.value > 0.0001; }).slice();
+        if (!isLoss) {
+          segments.push({ label: 'Прибыль', color: 'var(--seg-profit)', value: r.profit });
+        }
+
+        // Пересобираем полоску (маркер выручки сохраняем)
+        Array.prototype.slice.call(costTrack.querySelectorAll('.costviz__seg')).forEach(function (el) {
+          el.remove();
+        });
+
+        var frag = document.createDocumentFragment();
+        segments.forEach(function (seg) {
+          var pct = seg.value / denom * 100;
+          var el = document.createElement('div');
+          el.className = 'costviz__seg';
+          el.style.background = seg.color;
+          el.style.width = pct + '%';
+          el.title = seg.label + ': ' + formatRub(seg.value);
+          frag.appendChild(el);
+        });
+        costTrack.insertBefore(frag, costMarker);
+
+        // Маркер выручки виден только в убыточном сценарии
+        costViz.classList.toggle('is-loss', isLoss);
+        costMarker.style.left = (isLoss ? (d.sale / denom * 100) : 100) + '%';
+
+        // Легенда
+        var legendItems = segments.slice();
+        if (isLoss) {
+          legendItems.push({ label: 'Убыток', color: 'var(--seg-loss)', value: Math.abs(r.profit) });
+        }
+        costLegend.innerHTML = '';
+        legendItems.forEach(function (seg) {
+          var share = seg.value / d.sale * 100;
+          var item = document.createElement('div');
+          item.className = 'costviz__leg';
+          var dot = document.createElement('span');
+          dot.className = 'costviz__dot';
+          dot.style.background = seg.color;
+          var name = document.createElement('span');
+          name.textContent = seg.label;
+          var amount = document.createElement('span');
+          amount.className = 'costviz__leg-amount';
+          amount.textContent = formatRub(seg.value) + ' · ' + rubFormat.format(Math.round(share)) + '%';
+          item.appendChild(dot);
+          item.appendChild(name);
+          item.appendChild(amount);
+          costLegend.appendChild(item);
+        });
+      }
+
       // ---------- Вывод ----------
       function render(d, r, quiet) {
+        renderCostViz(d, r, quiet);
         if (quiet) {
           // Живой пересчёт при вводе — без анимации, чтобы не мельтешило
           profitValue.textContent = formatRub(r.profit);
