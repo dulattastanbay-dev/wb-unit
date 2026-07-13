@@ -44,10 +44,13 @@
       --text-primary: #1d1d1f;
       --text-secondary: #6e6e73;
       --border: #e5e5ea;
-      --accent: #7c3aed;
-      --accent-dark: #6d28d9;
-      --accent-wb: #cb11ab;
-      --focus-ring: rgba(124, 58, 237, 0.25);
+      /* Акцент задаётся динамически под выбранный маркетплейс (см. JS THEME).
+         По умолчанию — фирменные цвета Wildberries. */
+      --accent: #7c3aed;        /* сплошной: иконки, границы, фокус */
+      --g1: #cb11ab;            /* градиент, стоп 1 */
+      --g2: #7c3aed;            /* градиент, стоп 2 */
+      --on-accent: #ffffff;     /* текст поверх градиента (кнопка, активная пилюля) */
+      --focus-ring: rgba(124, 58, 237, 0.28);
 
       --success-bg: #f0fdf4;
       --success-border: #bbf7d0;
@@ -105,10 +108,11 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, rgba(203, 17, 171, 0.08), rgba(124, 58, 237, 0.08));
-      border: 1px solid rgba(124, 58, 237, 0.15);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--g1) 12%, #fff), color-mix(in srgb, var(--g2) 12%, #fff));
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, #fff);
       color: var(--accent);
       font-size: 13px;
+      transition: background 0.3s ease, border-color 0.3s ease;
       font-weight: 600;
       padding: 6px 14px;
       border-radius: 999px;
@@ -128,7 +132,7 @@
     }
 
     .header h1 .brand {
-      background: linear-gradient(135deg, var(--accent-wb), var(--accent));
+      background: linear-gradient(135deg, var(--g1), var(--g2));
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -198,9 +202,9 @@
     }
 
     .mp-pill.active {
-      background: linear-gradient(135deg, var(--accent-wb), var(--accent));
+      background: linear-gradient(135deg, var(--g1), var(--g2));
       border-color: transparent;
-      color: #ffffff;
+      color: var(--on-accent);
     }
 
     .form-grid {
@@ -338,8 +342,8 @@
       height: 56px;
       border: none;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, var(--accent-wb), var(--accent));
-      color: #ffffff;
+      background: linear-gradient(135deg, var(--g1), var(--g2));
+      color: var(--on-accent);
       font-family: inherit;
       font-size: 17px;
       font-weight: 650;
@@ -354,7 +358,7 @@
 
     .btn-calc:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
+      box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 40%, transparent);
       filter: brightness(1.05);
     }
 
@@ -1005,6 +1009,7 @@
       var MARKETPLACES = {
         wb: {
           currency: '₽',
+          theme: { accent: '#7c3aed', g1: '#cb11ab', g2: '#7c3aed', on: '#ffffff', ring: 'rgba(124, 58, 237, 0.28)' },
           commissions: [10, 15, 23, 25],
           defCommission: '23',
           commissionHint: 'Ставки примерные — точную смотрите в кабинете WB Partners',
@@ -1017,6 +1022,7 @@
         },
         ozon: {
           currency: '₽',
+          theme: { accent: '#005bff', g1: '#1a74ff', g2: '#005bff', on: '#ffffff', ring: 'rgba(0, 91, 255, 0.28)' },
           commissions: [12, 16, 19, 22],
           defCommission: '16',
           commissionHint: 'Не забудьте эквайринг ~1,5% — добавьте к комиссии через «Свою»',
@@ -1029,6 +1035,7 @@
         },
         ym: {
           currency: '₽',
+          theme: { accent: '#b26a00', g1: '#ffd21e', g2: '#ffb400', on: '#1d1d1f', ring: 'rgba(255, 180, 0, 0.35)' },
           commissions: [9, 14, 18, 23],
           defCommission: '14',
           commissionHint: 'Зависит от категории и модели работы (FBY/FBS)',
@@ -1041,6 +1048,7 @@
         },
         kaspi: {
           currency: '₸',
+          theme: { accent: '#d81f2a', g1: '#ff4e3a', g2: '#e4121a', on: '#ffffff', ring: 'rgba(228, 18, 26, 0.28)' },
           commissions: [5, 10, 12, 15],
           defCommission: '12',
           commissionHint: 'Ставка зависит от категории — точная в кабинете партнёра Kaspi',
@@ -1053,6 +1061,7 @@
         },
         amazon: {
           currency: '$',
+          theme: { accent: '#b45309', g1: '#ffb84d', g2: '#ff9900', on: '#232f3e', ring: 'rgba(255, 153, 0, 0.35)' },
           commissions: [8, 15, 17],
           defCommission: '15',
           commissionHint: 'Referral fee зависит от категории — точный в Revenue Calculator',
@@ -1065,6 +1074,7 @@
         },
         other: {
           currency: '₽',
+          theme: { accent: '#475569', g1: '#64748b', g2: '#475569', on: '#ffffff', ring: 'rgba(71, 85, 105, 0.28)' },
           commissions: [5, 10, 15, 20],
           defCommission: '15',
           commissionHint: 'Укажите комиссию вашей площадки',
@@ -1228,6 +1238,17 @@
         if (!MARKETPLACES[mpId]) mpId = 'wb';
         currentMp = mpId;
         var mp = MARKETPLACES[mpId];
+
+        // Цветовая тема под бренд площадки
+        var t = mp.theme;
+        if (t) {
+          var root = document.documentElement.style;
+          root.setProperty('--accent', t.accent);
+          root.setProperty('--g1', t.g1);
+          root.setProperty('--g2', t.g2);
+          root.setProperty('--on-accent', t.on);
+          root.setProperty('--focus-ring', t.ring);
+        }
 
         mpPicker.querySelectorAll('.mp-pill').forEach(function (pill) {
           var active = pill.getAttribute('data-mp') === mpId;
