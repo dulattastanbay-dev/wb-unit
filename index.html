@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Калькулятор юнит-экономики Wildberries — прибыль, маржа, ROI | WB.Unit</title>
-  <meta name="description" content="Бесплатный калькулятор юнит-экономики для селлеров Wildberries: чистая прибыль с единицы, маржинальность, ROI и точка безубыточности с учётом комиссии WB, логистики, процента выкупа, рекламы и налогов.">
+  <title>Калькулятор юнит-экономики: Wildberries, Ozon, Яндекс.Маркет, Kaspi, Amazon | WB.Unit</title>
+  <meta name="description" content="Бесплатный калькулятор юнит-экономики для селлеров маркетплейсов Wildberries, Ozon, Яндекс.Маркет, Kaspi.kz и Amazon: чистая прибыль с единицы, маржинальность, ROI и точка безубыточности с учётом комиссии, логистики, процента выкупа, рекламы и налогов.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="WB.Unit — калькулятор юнит-экономики Wildberries">
-  <meta property="og:description" content="Рассчитайте чистую прибыль, маржинальность, ROI и точку безубыточности товара на Wildberries — с учётом выкупа, логистики, рекламы и налогов.">
+  <meta property="og:title" content="WB.Unit — калькулятор юнит-экономики для маркетплейсов">
+  <meta property="og:description" content="Рассчитайте чистую прибыль, маржинальность, ROI и точку безубыточности товара на Wildberries, Ozon, Яндекс.Маркете, Kaspi и Amazon — с учётом выкупа, логистики, рекламы и налогов.">
   <meta property="og:locale" content="ru_RU">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%237c3aed'/%3E%3Ctext x='32' y='43' font-size='32' font-family='Arial, sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3E%E2%82%BD%3C/text%3E%3C/svg%3E">
   <!-- Yandex.Metrika counter -->
@@ -29,11 +29,11 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "WB.Unit — калькулятор юнит-экономики Wildberries",
+    "name": "WB.Unit — калькулятор юнит-экономики для маркетплейсов",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB" },
-    "description": "Онлайн-калькулятор прибыли для селлеров Wildberries: чистая прибыль с единицы, маржинальность, ROI и точка безубыточности с учётом комиссии, логистики, процента выкупа, рекламы и налогов."
+    "description": "Онлайн-калькулятор прибыли для селлеров Wildberries, Ozon, Яндекс.Маркета, Kaspi.kz и Amazon: чистая прибыль с единицы, маржинальность, ROI и точка безубыточности с учётом комиссии, логистики, процента выкупа, рекламы и налогов."
   }
   </script>
   <style>
@@ -166,6 +166,43 @@
       flex-shrink: 0;
     }
 
+    /* Переключатель маркетплейсов */
+    .mp-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .mp-pill {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: #fafafa;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    .mp-pill:hover {
+      border-color: #d1d1d6;
+      transform: translateY(-1px);
+    }
+
+    .mp-pill:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--focus-ring);
+    }
+
+    .mp-pill.active {
+      background: linear-gradient(135deg, var(--accent-wb), var(--accent));
+      border-color: transparent;
+      color: #ffffff;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -265,12 +302,14 @@
       display: block;
     }
 
-    /* Кастомная комиссия — скрыта по умолчанию */
-    #customCommissionField {
+    /* Кастомная комиссия и налог — скрыты по умолчанию */
+    #customCommissionField,
+    #customTaxField {
       display: none;
     }
 
-    #customCommissionField.visible {
+    #customCommissionField.visible,
+    #customTaxField.visible {
       display: flex;
       animation: fadeSlide 0.3s ease both;
     }
@@ -643,10 +682,10 @@
           <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
           <polyline points="16 7 22 7 22 13"/>
         </svg>
-        Для селлеров Wildberries
+        Для селлеров маркетплейсов
       </div>
       <h1><span class="brand">WB.Unit</span> — Калькулятор прибыли селлера</h1>
-      <p>Чистая прибыль, маржинальность, ROI и точка безубыточности — с учётом комиссии, логистики, процента выкупа, рекламы и налогов.</p>
+      <p>Чистая прибыль, маржинальность, ROI и точка безубыточности — для Wildberries, Ozon, Яндекс.Маркета, Kaspi и Amazon.</p>
     </div>
   </header>
 
@@ -668,6 +707,15 @@
         Параметры юнита
       </h2>
 
+      <div class="mp-picker" role="group" aria-label="Выбор маркетплейса" id="mpPicker">
+        <button type="button" class="mp-pill active" data-mp="wb" aria-pressed="true">Wildberries</button>
+        <button type="button" class="mp-pill" data-mp="ozon" aria-pressed="false">Ozon</button>
+        <button type="button" class="mp-pill" data-mp="ym" aria-pressed="false">Яндекс.Маркет</button>
+        <button type="button" class="mp-pill" data-mp="kaspi" aria-pressed="false">Kaspi.kz</button>
+        <button type="button" class="mp-pill" data-mp="amazon" aria-pressed="false">Amazon</button>
+        <button type="button" class="mp-pill" data-mp="other" aria-pressed="false">Другой</button>
+      </div>
+
       <form id="calcForm" novalidate>
         <div class="form-grid">
 
@@ -677,7 +725,7 @@
             <label for="purchasePrice">Цена закупки товара</label>
             <div class="input-wrap">
               <input type="number" id="purchasePrice" inputmode="decimal" min="0" step="0.01" placeholder="Например, 450">
-              <span class="unit">₽</span>
+              <span class="unit unit-currency">₽</span>
             </div>
             <span class="field-error" id="purchasePriceError">Укажите цену закупки (число больше 0)</span>
           </div>
@@ -686,22 +734,17 @@
             <label for="salePrice">Планируемая цена продажи</label>
             <div class="input-wrap">
               <input type="number" id="salePrice" inputmode="decimal" min="0" step="0.01" placeholder="Например, 1290">
-              <span class="unit">₽</span>
+              <span class="unit unit-currency">₽</span>
             </div>
             <span class="field-error" id="salePriceError">Укажите цену продажи (число больше 0)</span>
           </div>
 
-          <div class="form-section">Расходы Wildberries</div>
+          <div class="form-section">Расходы маркетплейса</div>
 
           <div class="field">
             <label for="commissionSelect">Комиссия маркетплейса</label>
-            <select id="commissionSelect">
-              <option value="10">10%</option>
-              <option value="15">15%</option>
-              <option value="23" selected>23%</option>
-              <option value="25">25%</option>
-              <option value="custom">Своя комиссия…</option>
-            </select>
+            <select id="commissionSelect"></select>
+            <span class="hint" id="commissionHint">Ставки примерные — точную смотрите в личном кабинете</span>
           </div>
 
           <div class="field" id="customCommissionField">
@@ -714,12 +757,12 @@
           </div>
 
           <div class="field">
-            <label for="wbLogistics">Логистика WB до покупателя</label>
+            <label for="wbLogistics">Логистика до покупателя</label>
             <div class="input-wrap">
               <input type="number" id="wbLogistics" inputmode="decimal" min="0" step="0.01" placeholder="Например, 72">
-              <span class="unit">₽</span>
+              <span class="unit unit-currency">₽</span>
             </div>
-            <span class="hint">Тариф WB за доставку единицы до клиента</span>
+            <span class="hint" id="wbLogisticsHint">Тариф маркетплейса за доставку единицы до клиента</span>
             <span class="field-error" id="wbLogisticsError">Укажите стоимость доставки (0, если её нет)</span>
           </div>
 
@@ -729,7 +772,7 @@
               <input type="number" id="buyoutRate" inputmode="decimal" min="1" max="100" step="1" value="100">
               <span class="unit">%</span>
             </div>
-            <span class="hint">Одежда и обувь — обычно 30–60%</span>
+            <span class="hint" id="buyoutHint">Одежда и обувь — обычно 30–60%</span>
             <span class="field-error" id="buyoutRateError">Укажите процент выкупа от 1 до 100</span>
           </div>
 
@@ -737,7 +780,7 @@
             <label for="returnLogistics">Обратная логистика</label>
             <div class="input-wrap">
               <input type="number" id="returnLogistics" inputmode="decimal" min="0" step="0.01" value="50">
-              <span class="unit">₽</span>
+              <span class="unit unit-currency">₽</span>
             </div>
             <span class="hint">Возврат невыкупленной единицы (обычно 50 ₽)</span>
             <span class="field-error" id="returnLogisticsError">Укажите стоимость возврата (0, если её нет)</span>
@@ -749,7 +792,7 @@
             <label for="logisticsCost">Логистика до склада и упаковка</label>
             <div class="input-wrap">
               <input type="number" id="logisticsCost" inputmode="decimal" min="0" step="0.01" placeholder="Например, 80">
-              <span class="unit">₽</span>
+              <span class="unit unit-currency">₽</span>
             </div>
             <span class="field-error" id="logisticsCostError">Укажите стоимость (0, если её нет)</span>
           </div>
@@ -764,13 +807,25 @@
             <span class="field-error" id="adsPercentError">Укажите ДРР от 0 до 100%</span>
           </div>
 
-          <div class="field field--full">
-            <label for="taxSelect">Налоговый режим (УСН)</label>
+          <div class="field">
+            <label for="taxSelect">Налоговый режим</label>
             <select id="taxSelect">
-              <option value="income" selected>Доходы — 6%</option>
-              <option value="income-expenses">Доходы − Расходы — 15%</option>
+              <option value="usn6" selected>УСН «Доходы» — 6% (РФ)</option>
+              <option value="usn15">УСН «Доходы − Расходы» — 15% (РФ)</option>
+              <option value="kz3">Упрощёнка — 3% с дохода (РК)</option>
+              <option value="custom">Свой % с дохода…</option>
+              <option value="none">Не учитывать налог</option>
             </select>
-            <span class="hint">6% считается с цены продажи, 15% — с разницы доходов и расходов</span>
+            <span class="hint" id="taxHint">6% считается с цены продажи, 15% — с разницы доходов и расходов</span>
+          </div>
+
+          <div class="field" id="customTaxField">
+            <label for="customTax">Свой налог с дохода</label>
+            <div class="input-wrap">
+              <input type="number" id="customTax" inputmode="decimal" min="0" max="100" step="0.1" placeholder="Например, 4">
+              <span class="unit">%</span>
+            </div>
+            <span class="field-error" id="customTaxError">Укажите налог от 0 до 100%</span>
           </div>
 
         </div>
@@ -892,9 +947,16 @@
       <details>
         <summary>Как процент выкупа влияет на логистику</summary>
         <div class="faq__body">
-          Wildberries берёт плату за каждую доставку до клиента, а за невыкупленный товар — ещё и за возврат. Чем ниже выкуп, тем больше доставок приходится на одну реальную продажу:
-          <span class="formula">Логистика WB = (Доставка + Возврат × (1 − Выкуп)) / Выкуп</span>
-          Пример: при доставке 72 ₽, возврате 50 ₽ и выкупе 30% реальная логистика на одну продажу — уже 356,7 ₽.
+          Маркетплейс берёт плату за каждую доставку до клиента, а за невыкупленный товар — ещё и за возврат. Чем ниже выкуп, тем больше доставок приходится на одну реальную продажу:
+          <span class="formula">Логистика = (Доставка + Возврат × (1 − Выкуп)) / Выкуп</span>
+          Пример: при доставке 72 ₽, возврате 50 ₽ и выкупе 30% реальная логистика на одну продажу — уже 356,7 ₽. Сильнее всего это бьёт по одежде и обуви на Wildberries.
+        </div>
+      </details>
+
+      <details>
+        <summary>Где смотреть точные комиссии и тарифы</summary>
+        <div class="faq__body">
+          Ставки в калькуляторе — типичные ориентиры, реальные зависят от категории и меняются. Точные цифры: Wildberries — «Тарифы» в личном кабинете WB Partners; Ozon — калькулятор тарифов Ozon Seller (не забудьте про эквайринг ~1,5%); Яндекс.Маркет — раздел «Тарифы» в кабинете; Kaspi.kz — договор в кабинете партнёра; Amazon — Revenue Calculator в Seller Central.
         </div>
       </details>
 
@@ -928,7 +990,7 @@
   <!-- ============ Футер ============ -->
   <footer class="footer">
     <div class="container">
-      <p class="footer__copy">WB.Unit · Расчёт носит справочный характер и не учитывает хранение, приёмку и эквайринг.</p>
+      <p class="footer__copy">WB.Unit · Расчёт носит справочный характер и не учитывает хранение, приёмку и эквайринг. Тарифы меняются — сверяйтесь с кабинетом маркетплейса.</p>
     </div>
   </footer>
 
@@ -936,7 +998,94 @@
     (function () {
       'use strict';
 
-      var STORAGE_KEY = 'wb-unit-inputs';
+      var STORAGE_KEY = 'wb-unit-inputs-v2';
+
+      // ---------- Пресеты маркетплейсов ----------
+      // Ставки комиссий — типичные ориентиры по категориям; точные всегда в кабинете селлера.
+      var MARKETPLACES = {
+        wb: {
+          currency: '₽',
+          commissions: [10, 15, 23, 25],
+          defCommission: '23',
+          commissionHint: 'Ставки примерные — точную смотрите в кабинете WB Partners',
+          logHint: 'Тариф WB за доставку единицы до клиента',
+          logPlaceholder: 'Например, 72',
+          returnDefault: '50',
+          buyoutDefault: '100',
+          buyoutHint: 'Одежда и обувь — обычно 30–60%',
+          taxDefault: 'usn6'
+        },
+        ozon: {
+          currency: '₽',
+          commissions: [12, 16, 19, 22],
+          defCommission: '16',
+          commissionHint: 'Не забудьте эквайринг ~1,5% — добавьте к комиссии через «Свою»',
+          logHint: 'Магистраль + последняя миля за единицу',
+          logPlaceholder: 'Например, 90',
+          returnDefault: '50',
+          buyoutDefault: '100',
+          buyoutHint: 'Одежда и обувь — обычно 40–70%',
+          taxDefault: 'usn6'
+        },
+        ym: {
+          currency: '₽',
+          commissions: [9, 14, 18, 23],
+          defCommission: '14',
+          commissionHint: 'Зависит от категории и модели работы (FBY/FBS)',
+          logHint: 'Тариф Маркета за доставку единицы до клиента',
+          logPlaceholder: 'Например, 80',
+          returnDefault: '50',
+          buyoutDefault: '100',
+          buyoutHint: 'Одежда и обувь — обычно 40–70%',
+          taxDefault: 'usn6'
+        },
+        kaspi: {
+          currency: '₸',
+          commissions: [5, 10, 12, 15],
+          defCommission: '12',
+          commissionHint: 'Ставка зависит от категории — точная в кабинете партнёра Kaspi',
+          logHint: 'Тариф Kaspi Доставки за единицу',
+          logPlaceholder: 'Например, 700',
+          returnDefault: '0',
+          buyoutDefault: '100',
+          buyoutHint: 'На Kaspi заказы в основном предоплачены — выкуп близок к 100%',
+          taxDefault: 'kz3'
+        },
+        amazon: {
+          currency: '$',
+          commissions: [8, 15, 17],
+          defCommission: '15',
+          commissionHint: 'Referral fee зависит от категории — точный в Revenue Calculator',
+          logHint: 'FBA fulfillment fee за единицу',
+          logPlaceholder: 'Например, 5',
+          returnDefault: '0',
+          buyoutDefault: '100',
+          buyoutHint: 'Для FBM/FBA возвраты можно учесть снижением процента',
+          taxDefault: 'none'
+        },
+        other: {
+          currency: '₽',
+          commissions: [5, 10, 15, 20],
+          defCommission: '15',
+          commissionHint: 'Укажите комиссию вашей площадки',
+          logHint: 'Доставка единицы до клиента',
+          logPlaceholder: 'Например, 100',
+          returnDefault: '0',
+          buyoutDefault: '100',
+          buyoutHint: 'Доля заказов, которые покупатели забирают',
+          taxDefault: 'none'
+        }
+      };
+
+      var TAX_HINTS = {
+        usn6: '6% считается с цены продажи',
+        usn15: '15% считается с разницы доходов и расходов',
+        kz3: '3% с дохода — упрощённая декларация для ИП в Казахстане',
+        custom: 'Процент считается с цены продажи',
+        none: 'Налог не будет учтён в расчёте'
+      };
+
+      var currentMp = 'wb';
 
       // ---------- Элементы ----------
       var form = document.getElementById('calcForm');
@@ -951,10 +1100,18 @@
       var customCommissionField = document.getElementById('customCommissionField');
       var customCommissionInput = document.getElementById('customCommission');
       var taxSelect = document.getElementById('taxSelect');
+      var customTaxField = document.getElementById('customTaxField');
+      var customTaxInput = document.getElementById('customTax');
+
+      var mpPicker = document.getElementById('mpPicker');
+      var commissionHint = document.getElementById('commissionHint');
+      var wbLogisticsHint = document.getElementById('wbLogisticsHint');
+      var buyoutHint = document.getElementById('buyoutHint');
+      var taxHint = document.getElementById('taxHint');
 
       var numberInputs = [
         purchaseInput, saleInput, logisticsInput, wbLogisticsInput,
-        buyoutInput, returnInput, adsInput, customCommissionInput
+        buyoutInput, returnInput, adsInput, customCommissionInput, customTaxInput
       ];
 
       var resultsBlock = document.getElementById('results');
@@ -984,9 +1141,9 @@
       var resultsShown = false;
 
       // ---------- Цели Яндекс.Метрики ----------
-      function reachGoal(name) {
+      function reachGoal(name, params) {
         if (typeof window.ym === 'function') {
-          window.ym(110550796, 'reachGoal', name);
+          window.ym(110550796, 'reachGoal', name, params || {});
         }
       }
 
@@ -997,7 +1154,7 @@
       });
 
       function formatRub(value) {
-        return rubFormat.format(Math.round(value * 100) / 100) + ' ₽';
+        return rubFormat.format(Math.round(value * 100) / 100) + ' ' + MARKETPLACES[currentMp].currency;
       }
 
       function formatPercent(value) {
@@ -1013,6 +1170,7 @@
           });
           data.commissionSelect = commissionSelect.value;
           data.taxSelect = taxSelect.value;
+          data.marketplace = currentMp;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         } catch (e) { /* localStorage может быть недоступен — не критично */ }
       }
@@ -1022,16 +1180,100 @@
           var raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return;
           var data = JSON.parse(raw);
+          applyMarketplace(data.marketplace || 'wb', false);
           numberInputs.forEach(function (input) {
             if (typeof data[input.id] === 'string' && data[input.id] !== '') {
               input.value = data[input.id];
             }
           });
-          if (data.commissionSelect) commissionSelect.value = data.commissionSelect;
+          if (data.commissionSelect) {
+            rebuildCommissionOptions(MARKETPLACES[currentMp], data.commissionSelect);
+          }
           if (data.taxSelect) taxSelect.value = data.taxSelect;
           customCommissionField.classList.toggle('visible', commissionSelect.value === 'custom');
+          updateTaxHint();
         } catch (e) { /* повреждённые данные игнорируем */ }
       }
+
+      // ---------- Переключение маркетплейса ----------
+      function rebuildCommissionOptions(mp, selectedValue) {
+        commissionSelect.innerHTML = '';
+        mp.commissions.forEach(function (value) {
+          var option = document.createElement('option');
+          option.value = String(value);
+          option.textContent = value + '%';
+          commissionSelect.appendChild(option);
+        });
+        var customOption = document.createElement('option');
+        customOption.value = 'custom';
+        customOption.textContent = 'Своя комиссия…';
+        commissionSelect.appendChild(customOption);
+
+        var wanted = selectedValue || mp.defCommission;
+        var hasWanted = Array.prototype.some.call(commissionSelect.options, function (o) {
+          return o.value === wanted;
+        });
+        commissionSelect.value = hasWanted ? wanted : mp.defCommission;
+        customCommissionField.classList.toggle('visible', commissionSelect.value === 'custom');
+      }
+
+      function updateTaxHint() {
+        taxHint.textContent = TAX_HINTS[taxSelect.value] || '';
+        customTaxField.classList.toggle('visible', taxSelect.value === 'custom');
+      }
+
+      // applyDefaults=true — переключение рукой (сброс полей площадки на пресеты),
+      // false — восстановление из localStorage (значения зададутся после).
+      function applyMarketplace(mpId, applyDefaults) {
+        if (!MARKETPLACES[mpId]) mpId = 'wb';
+        currentMp = mpId;
+        var mp = MARKETPLACES[mpId];
+
+        mpPicker.querySelectorAll('.mp-pill').forEach(function (pill) {
+          var active = pill.getAttribute('data-mp') === mpId;
+          pill.classList.toggle('active', active);
+          pill.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        document.querySelectorAll('.unit-currency').forEach(function (el) {
+          el.textContent = mp.currency;
+        });
+
+        commissionHint.textContent = mp.commissionHint;
+        wbLogisticsHint.textContent = mp.logHint;
+        wbLogisticsInput.placeholder = mp.logPlaceholder;
+        buyoutHint.textContent = mp.buyoutHint;
+
+        if (applyDefaults) {
+          rebuildCommissionOptions(mp, null);
+          wbLogisticsInput.value = '';
+          returnInput.value = mp.returnDefault;
+          buyoutInput.value = mp.buyoutDefault;
+          taxSelect.value = mp.taxDefault;
+        } else {
+          rebuildCommissionOptions(mp, commissionSelect.value);
+        }
+        updateTaxHint();
+      }
+
+      mpPicker.addEventListener('click', function (event) {
+        var pill = event.target.closest('.mp-pill');
+        if (!pill) return;
+        applyMarketplace(pill.getAttribute('data-mp'), true);
+        saveInputs();
+        // Смена площадки сбрасывает логистику под её тарифы: если результаты уже
+        // на экране, либо пересчитываем их в новой валюте, либо прячем — чтобы не
+        // осталось старого числа в чужой валюте.
+        if (resultsShown) {
+          var inputs = readInputs(false);
+          if (inputs) {
+            render(inputs, compute(inputs), true);
+          } else {
+            resultsBlock.classList.remove('visible');
+            resultsShown = false;
+          }
+        }
+      });
 
       // ---------- Показ/скрытие поля кастомной комиссии ----------
       commissionSelect.addEventListener('change', function () {
@@ -1041,6 +1283,16 @@
           customCommissionInput.focus();
         } else {
           clearFieldError(customCommissionInput);
+        }
+      });
+
+      // ---------- Показ/скрытие поля кастомного налога ----------
+      taxSelect.addEventListener('change', function () {
+        updateTaxHint();
+        if (taxSelect.value === 'custom') {
+          customTaxInput.focus();
+        } else {
+          clearFieldError(customTaxInput);
         }
       });
 
@@ -1103,6 +1355,12 @@
           commissionPercent = parseFloat(commissionSelect.value);
         }
 
+        var customTaxRate = 0;
+        if (taxSelect.value === 'custom') {
+          customTaxRate = num(customTaxInput);
+          check(customTaxInput, !isNaN(customTaxRate) && customTaxRate >= 0 && customTaxRate <= 100);
+        }
+
         if (firstInvalid) firstInvalid.focus();
         if (!valid) return null;
 
@@ -1115,7 +1373,8 @@
           returnCost: returnCost,
           ads: ads,
           commissionPercent: commissionPercent,
-          taxMode: taxSelect.value
+          taxMode: taxSelect.value,
+          customTaxRate: customTaxRate
         };
       }
 
@@ -1131,24 +1390,36 @@
         var adsAmount = d.sale * d.ads / 100;
         var costsBeforeTax = d.purchase + d.logistics + effectiveWbLogistics + commissionAmount + adsAmount;
 
-        // Налог:
-        // УСН «Доходы» 6% — с полной цены продажи.
+        // Налог: с дохода (УСН 6%, упрощёнка РК 3%, свой %) — с полной цены продажи;
         // УСН «Доходы − Расходы» 15% — с разницы (если она положительная).
-        var taxAmount, taxLabel;
-        if (d.taxMode === 'income') {
-          taxAmount = d.sale * 0.06;
+        var taxAmount, taxLabel, taxShare;
+        if (d.taxMode === 'usn6') {
+          taxShare = 0.06;
+          taxAmount = d.sale * taxShare;
           taxLabel = 'Налог УСН «Доходы» (6%)';
-        } else {
+        } else if (d.taxMode === 'usn15') {
+          taxShare = 0;
           var taxBase = d.sale - costsBeforeTax;
           taxAmount = taxBase > 0 ? taxBase * 0.15 : 0;
           taxLabel = 'Налог УСН «Доходы − Расходы» (15%)';
+        } else if (d.taxMode === 'kz3') {
+          taxShare = 0.03;
+          taxAmount = d.sale * taxShare;
+          taxLabel = 'Налог 3% с дохода (упрощёнка РК)';
+        } else if (d.taxMode === 'custom') {
+          taxShare = d.customTaxRate / 100;
+          taxAmount = d.sale * taxShare;
+          taxLabel = 'Налог ' + rubFormat.format(d.customTaxRate) + '% с дохода';
+        } else {
+          taxShare = 0;
+          taxAmount = 0;
+          taxLabel = 'Налог (не учитывается)';
         }
 
         var profit = d.sale - costsBeforeTax - taxAmount;
 
         // Точка безубыточности: цена, при которой прибыль = 0.
         // Для УСН 15% налог при нулевой базе равен нулю и в формуле не участвует.
-        var taxShare = d.taxMode === 'income' ? 0.06 : 0;
         var denominator = 1 - d.commissionPercent / 100 - d.ads / 100 - taxShare;
         var fixedCosts = d.purchase + d.logistics + effectiveWbLogistics;
         var breakeven = denominator > 0 ? fixedCosts / denominator : null;
@@ -1184,7 +1455,7 @@
         bdLogistics.textContent = '− ' + formatRub(d.logistics);
         bdCommissionLabel.textContent = 'Комиссия маркетплейса (' + rubFormat.format(d.commissionPercent) + '%)';
         bdCommission.textContent = '− ' + formatRub(r.commissionAmount);
-        bdWbLogisticsLabel.textContent = 'Логистика WB (выкуп ' + rubFormat.format(d.buyout) + '%)';
+        bdWbLogisticsLabel.textContent = 'Логистика до клиента (выкуп ' + rubFormat.format(d.buyout) + '%)';
         bdWbLogistics.textContent = '− ' + formatRub(r.effectiveWbLogistics);
         bdAdsLabel.textContent = 'Реклама (ДРР ' + rubFormat.format(d.ads) + '%)';
         bdAds.textContent = '− ' + formatRub(r.adsAmount);
@@ -1231,7 +1502,7 @@
           return;
         }
         render(inputs, compute(inputs), false);
-        reachGoal('calc');
+        reachGoal('calc', { marketplace: currentMp });
       });
 
       // Цель: открыл вопрос в блоке «Как это считается»
@@ -1259,6 +1530,7 @@
       commissionSelect.addEventListener('change', onFieldChange);
       taxSelect.addEventListener('change', onFieldChange);
 
+      applyMarketplace('wb', true);
       restoreInputs();
     })();
   </script>
