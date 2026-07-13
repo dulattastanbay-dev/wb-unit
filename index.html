@@ -89,6 +89,25 @@
       display: flex;
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Мягкий световой ореол под шапкой — окрашивается в цвет площадки */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -280px;
+      left: 50%;
+      width: 900px;
+      height: 700px;
+      max-width: 150vw;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--g1) 26%, transparent), transparent 62%);
+      filter: blur(30px);
+      opacity: 0.55;
+      z-index: -1;
+      pointer-events: none;
+      transition: background 0.5s ease;
     }
 
     .container {
@@ -353,7 +372,32 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      position: relative;
+      overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    /* Блик, пробегающий по кнопке при наведении */
+    .btn-calc::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -70%;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.6s ease;
+      pointer-events: none;
+    }
+
+    .btn-calc:hover::after {
+      left: 130%;
+    }
+
+    .btn-calc > * {
+      position: relative;
+      z-index: 1;
     }
 
     .btn-calc:hover {
@@ -425,6 +469,12 @@
       border-radius: var(--radius-md);
       padding: 18px 16px;
       text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .metric:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
     }
 
     .metric__label {
@@ -628,6 +678,75 @@
         opacity: 1;
         transform: translateY(0);
       }
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.4);
+      }
+      60% {
+        transform: scale(1.12);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pillPop {
+      0% { transform: scale(0.92); }
+      100% { transform: scale(1); }
+    }
+
+    /* Появление блоков при загрузке страницы */
+    .header,
+    main > .card {
+      animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .header { animation-delay: 0.02s; }
+    main > .card:nth-of-type(1) { animation-delay: 0.1s; }
+    .faq-card { animation-delay: 0.18s; }
+
+    /* Каскад внутри блока результатов */
+    .results.visible .metric {
+      animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .results.visible .metric:nth-child(1) { animation-delay: 0.05s; }
+    .results.visible .metric:nth-child(2) { animation-delay: 0.12s; }
+    .results.visible .metric:nth-child(3) { animation-delay: 0.19s; }
+
+    .results.visible .results__header svg {
+      animation: popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .results.visible .breakdown__row {
+      animation: fadeSlide 0.4s ease both;
+    }
+    .results.visible .breakdown__row:nth-child(1) { animation-delay: 0.10s; }
+    .results.visible .breakdown__row:nth-child(2) { animation-delay: 0.14s; }
+    .results.visible .breakdown__row:nth-child(3) { animation-delay: 0.18s; }
+    .results.visible .breakdown__row:nth-child(4) { animation-delay: 0.22s; }
+    .results.visible .breakdown__row:nth-child(5) { animation-delay: 0.26s; }
+    .results.visible .breakdown__row:nth-child(6) { animation-delay: 0.30s; }
+    .results.visible .breakdown__row:nth-child(7) { animation-delay: 0.34s; }
+    .results.visible .breakdown__row:nth-child(8) { animation-delay: 0.38s; }
+
+    /* Лёгкий «поп» активной пилюли маркетплейса */
+    .mp-pill.active {
+      animation: pillPop 0.25s ease;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1149,6 +1268,28 @@
       var bdProfit = document.getElementById('bdProfit');
 
       var resultsShown = false;
+      var lastProfit = 0, lastMargin = 0, lastRoi = 0;
+      var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // ---------- Плавный «отсчёт» числа ----------
+      function animateNumber(el, from, to, formatter) {
+        if (el.__raf) cancelAnimationFrame(el.__raf);
+        // В скрытой вкладке rAF не тикает — показываем итог сразу
+        if (prefersReduced || document.hidden || Math.abs(to - from) < 0.005) {
+          el.textContent = formatter(to);
+          el.__raf = null;
+          return;
+        }
+        var duration = 600;
+        var start = performance.now();
+        function frame(now) {
+          var p = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+          el.textContent = formatter(from + (to - from) * eased);
+          el.__raf = p < 1 ? requestAnimationFrame(frame) : null;
+        }
+        el.__raf = requestAnimationFrame(frame);
+      }
 
       // ---------- Цели Яндекс.Метрики ----------
       function reachGoal(name, params) {
@@ -1292,6 +1433,7 @@
           } else {
             resultsBlock.classList.remove('visible');
             resultsShown = false;
+            lastProfit = lastMargin = lastRoi = 0;
           }
         }
       });
@@ -1460,9 +1602,20 @@
 
       // ---------- Вывод ----------
       function render(d, r, quiet) {
-        profitValue.textContent = formatRub(r.profit);
-        marginValue.textContent = formatPercent(r.margin);
-        roiValue.textContent = formatPercent(r.roi);
+        if (quiet) {
+          // Живой пересчёт при вводе — без анимации, чтобы не мельтешило
+          profitValue.textContent = formatRub(r.profit);
+          marginValue.textContent = formatPercent(r.margin);
+          roiValue.textContent = formatPercent(r.roi);
+        } else {
+          // Нажатие кнопки — плавный отсчёт от прошлых значений
+          animateNumber(profitValue, lastProfit, r.profit, formatRub);
+          animateNumber(marginValue, lastMargin, r.margin, formatPercent);
+          animateNumber(roiValue, lastRoi, r.roi, formatPercent);
+        }
+        lastProfit = r.profit;
+        lastMargin = r.margin;
+        lastRoi = r.roi;
 
         if (r.breakeven !== null) {
           breakevenText.innerHTML = 'Точка безубыточности: <strong>' + formatRub(r.breakeven) +
